@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ViewImage"></activity>
+        <activity android:name=".ui.ScanneQrCode"></activity>
+        <activity android:name=".ui.QrGenerator" />
+        <activity android:name=".ui.Linkqrcode" />
+        <activity android:name=".ui.ViewImage" />
         <activity android:name=".ui.Videoactivity" />
         <activity android:name=".ui.Splashactivity" />
         <activity android:name=".ui.SigninUp" />
