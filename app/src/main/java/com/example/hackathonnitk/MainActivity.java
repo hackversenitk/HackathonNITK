@@ -24,6 +24,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.hackathonnitk.Algorithms.ImageConverter;
+import com.example.hackathonnitk.ui.DisplayImageActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     Button viewphotosbt,gallerybt;
@@ -177,8 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void didTapButton(View view) {
         final Animation myAnim = AnimationUtils.loadAnimation(this, R.anim.bounce);
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
-        myAnim.setInterpolator(interpolator);
         gallerybt.startAnimation(myAnim);
     }
 

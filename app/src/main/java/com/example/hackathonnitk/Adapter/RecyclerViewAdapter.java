@@ -2,25 +2,38 @@ package com.example.hackathonnitk.Adapter;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hackathonnitk.Algorithms.CachedThumbnail;
+import com.example.hackathonnitk.Algorithms.ImageConverter;
+import com.example.hackathonnitk.Algorithms.StoreImage;
+import com.example.hackathonnitk.ConstantsIt;
+import com.example.hackathonnitk.R;
+import com.example.hackathonnitk.model.CacheParams;
 import com.example.hackathonnitk.model.ImageUploadInfo;
+import com.example.hackathonnitk.ui.QrGenerator;
 import com.github.clans.fab.FloatingActionButton;
 
 import org.json.JSONException;
@@ -28,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,11 +57,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     ProgressDialog progressDialog;
     List<ImageUploadInfo> MainImageUploadInfoList;
     String username;
+    Bitmap bitmap = null;
+    String cacheDir = null;
 
     public RecyclerViewAdapter(Context context, List<ImageUploadInfo> TempList,String username) {
         this.MainImageUploadInfoList = TempList;
         this.context = context;
         this.username=username;
+        this.bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.image);
+        this.cacheDir = context.getExternalCacheDir().toString();
     }
 
     @Override
@@ -142,6 +160,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
 
         holder.imageNameTextView.setText(imagenameis);
+        CachedThumbnail tmp = new CachedThumbnail();
+        (tmp).execute(new CacheParams(holder.imageView, cacheDir+"/"+imagenameis));
 
     }
 
@@ -156,18 +176,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public TextView imageNameTextView;
         public CardView cardView;
         public FloatingActionButton floatingActionButton;
+        public ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
             cardView=itemView.findViewById(R.id.cardview1);
             imageNameTextView=itemView.findViewById(R.id.imagename);
             floatingActionButton=itemView.findViewById(R.id.menudis);
-
-
+            this.imageView = itemView.findViewById(R.id.imageviewrecycler);
         }
 
     }
 
-    private class ImageSave extends AsyncTask<String,Void,Void> {
+    private class ImageSave extends AsyncTask<String,Void,Void>{
 
         String filepath;
 
@@ -232,7 +252,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         protected void onPostExecute(Void aVoid) {
             if(filepath!=null){
                 Toast.makeText(context,"File Stored at: "+filepath,Toast.LENGTH_LONG).show();
-                notificationshow();
+                Log.i("File Stored at:- ",filepath);
+                notificationshowthis(filepath);
+                // notificationshow();
             }
 
             else Toast.makeText(context,"Error in Saving file ",Toast.LENGTH_LONG).show();
@@ -428,6 +450,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         }
         return response.toString();
+    }
+
+
+    public void notificationshowthis(String filepath) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "diskspace";
+            String description = "View downloaded video";
+            String channel_id = "diskspace";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channel_id, name, importance);
+            channel.setDescription(description);
+
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // show notification after saving file
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "diskspace")
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(filepath)
+                .setContentText("Tap to view the image.")
+                .setLargeIcon(BitmapFactory.decodeFile(filepath))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(PendingIntent.getActivity(context, 0,
+                        new Intent(Intent.ACTION_VIEW)
+                                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                                .setDataAndType(FileProvider.getUriForFile(context, "com.example.dotslash.fileprovider", new File(filepath)),
+                                        "*/*"), 0));
+
+        notificationManagerCompat.notify(2, builder.build());
     }
 
 

@@ -92,21 +92,6 @@
             android:src="@drawable/ic_camera_alt_black_24dp"
             fab:fab_label="Upload From Camera"
             fab:fab_size="mini" />
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/shareqrscan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_alt_black_24dp"
-            fab:fab_label="Qr Scanner"
-            fab:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/shareqrscan_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_camera_alt_black_24dp"
-            fab:fab_label="Add File with link"
-            fab:fab_size="mini" />
     </com.github.clans.fab.FloatingActionMenu>
 
 

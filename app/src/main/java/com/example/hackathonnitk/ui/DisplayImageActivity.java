@@ -32,7 +32,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hackathonnitk.Adapter.RecyclerViewAdapter;
+import com.example.hackathonnitk.Algorithms.CacheImage;
+import com.example.hackathonnitk.Algorithms.ImageConverter;
+import com.example.hackathonnitk.Algorithms.StoreImage;
+import com.example.hackathonnitk.ConstantsIt;
 import com.example.hackathonnitk.R;
+import com.example.hackathonnitk.model.ImageUploadInfo;
+import com.example.hackathonnitk.model.ImagesList;
+import com.example.hackathonnitk.model.Parsejson;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,7 +75,7 @@ public class DisplayImageActivity extends AppCompatActivity {
 
     private String username;
     private String filename;
-    private List<String> imagestring=new ArrayList<>();
+    private List<String>imagestring=new ArrayList<>();
 
     private FirebaseUser user;
     private FirebaseAuth mAuth;
@@ -181,7 +189,7 @@ public class DisplayImageActivity extends AppCompatActivity {
         });
 
         // initialise cacheObject
-        //  cacheImage = new CacheImage(DisplayImageActivity.this);
+        cacheImage = new CacheImage(DisplayImageActivity.this);
 
     }
 
@@ -334,7 +342,7 @@ public class DisplayImageActivity extends AppCompatActivity {
 
     }
 
-    private class ImageIPFS  extends AsyncTask<Void,Void,Void> {
+    private class ImageIPFS  extends AsyncTask<Void,Void,Void>{
         @Override
         protected Void doInBackground(Void... strings) {
             try {
@@ -440,6 +448,8 @@ public class DisplayImageActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... strings) {
             bitmap = BitmapFactory.decodeFile(strings[0]);
+            cacheImage.cacheFromBitmap(bitmap, filename);
+
 
             try {
                 FileOutputStream out = new FileOutputStream(strings[0]);

@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.example.hackathonnitk.R;
 
-public class SigninUp extends AppCompatActivity {
+public class VideoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signin_up);
+        setContentView(R.layout.activity_videoactivity);
     }
 }
