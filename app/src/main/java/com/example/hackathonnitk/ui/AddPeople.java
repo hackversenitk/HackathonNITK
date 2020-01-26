@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.hackathonnitk.ConstantsIt;
 import com.example.hackathonnitk.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +37,7 @@ public class AddPeople extends AppCompatActivity {
     private TextView textView;
     private Button submitbutton;
     private ImageButton imageButton;
-    List<String> usernamelist=new ArrayList<>();
+    List usernamelist=new ArrayList<String>();
     private String Username;
     private String Imagename;
     @Override
@@ -57,6 +58,8 @@ public class AddPeople extends AppCompatActivity {
                     textView.append(useris);
                     textView.append("\n");
                     usernamelist.add(useris);
+                    editText.setText("");
+
                 }
             }
         });
@@ -65,6 +68,7 @@ public class AddPeople extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new AddUserAsync().execute();
+                finish();
             }
         });
     }
@@ -73,7 +77,7 @@ public class AddPeople extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... strings) {
             try {
-                URL url = new URL(ConstantsIt.LOCALURLGETFILENAME);
+                URL url = new URL(ConstantsIt.LOCALURLADDPEOPLE);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setDoOutput(true);
                 urlConnection.setDoInput(true);
@@ -84,9 +88,10 @@ public class AddPeople extends AppCompatActivity {
 
                 try {
                     JSONObject obj = new JSONObject();
-                    obj.put("user" , Username);
-                    obj.put("imagename",Imagename);
-                    obj.put("userlist",usernamelist);
+                    obj.put("user1" , Username);
+                    obj.put("name",Imagename);
+                    JSONArray jsonArray=new JSONArray(usernamelist);
+                    obj.put("users",jsonArray);
                     wr.writeBytes(obj.toString());
                     Log.i("JSON Input", obj.toString());
                     wr.flush();

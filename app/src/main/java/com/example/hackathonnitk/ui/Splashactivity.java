@@ -19,6 +19,7 @@ public class Splashactivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splashactivity);
 
+
         imageView=findViewById(R.id.imageView3);
         textView=findViewById(R.id.textView3);
         Handler handler=new Handler();
@@ -26,7 +27,7 @@ public class Splashactivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent intent=new Intent(Splashactivity.this, DisplayImageActivity.class);
+                Intent intent=new Intent(Splashactivity.this, Everyone.class);
                 startActivity(intent);
                 finish();
             }

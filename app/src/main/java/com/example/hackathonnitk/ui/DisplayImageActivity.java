@@ -515,7 +515,6 @@ public class DisplayImageActivity extends AppCompatActivity {
             progressDialog.setMessage("Uploading Image...");
             progressDialog.setCancelable(false);
             progressDialog.show();
-
         }
 
         @Override
